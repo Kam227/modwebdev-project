@@ -3,9 +3,10 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      events: "events",
-    },
+  server: {
+    host: true,
+    port: 5173,
+    strictPort: true,
+    allowedHosts: true, // ✅ most permissive option (accept all)
   },
 });
