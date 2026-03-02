@@ -30,9 +30,9 @@ Location
 Openings
 CertificateAid
 trainingNeeded
-contact  -------------------->
-                               
-                               
+contact 
+
+-------------------->
                                ContactInfo
                                ------------
                                objectId
@@ -44,6 +44,8 @@ contact  -------------------->
 ## Component Tree Diagram:
 App
  ├── TaskList
+ 
  │     ├── Task
  │
+ 
  └── Contact
