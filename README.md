@@ -31,6 +31,8 @@ Openings
 CertificateAid
 trainingNeeded
 contact  -------------------->
+                               
+                               
                                ContactInfo
                                ------------
                                objectId
