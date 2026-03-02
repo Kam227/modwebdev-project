@@ -20,32 +20,3 @@ In this update, I replaced the original House components with a new Tasks system
 | PhoneNumber      | String | Contact phone number               |
 | Email            | String | Contact email address              |
 | ServiceLocations | String | Areas serviced                     |
-
-## Relationship Diagram:
-Tasks
------
-objectId
-Description
-Location
-Openings
-CertificateAid
-trainingNeeded
-contact 
-
--------------------->
-                               ContactInfo
-                               ------------
-                               objectId
-                               Name
-                               PhoneNumber
-                               Email
-                               ServiceLocations
-
-## Component Tree Diagram:
-App
- ├── TaskList
- 
- │     ├── Task
- │
- 
- └── Contact
