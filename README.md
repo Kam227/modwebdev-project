@@ -1,16 +1,47 @@
-# React + Vite
+## Summary of Changes:
+In this update, I replaced the original House components with a new Tasks system that better matches the project requirements. I created a Tasks class and connected it to a ContactInfo class using a Pointer relationship in Parse. I also added React Router so users can click on a task’s contact information and navigate to a separate Contact page. The project now uses two Parse models, properly loads asynchronous data with hooks, and separates components more clearly based on responsibility.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Class: Tasks
+| Field Name     | Type                  | Description                                       |
+| -------------- | --------------------- | ------------------------------------------------- |
+| objectId       | String                | Unique identifier (auto-generated)                |
+| Description    | String                | Description of the task                           |
+| Location       | String                | Task location                                     |
+| Openings       | Number                | Number of available openings                      |
+| CertificateAid | Boolean/String        | Indicates if certification assistance is provided |
+| trainingNeeded | Boolean/String        | Indicates if training is required                 |
+| contact        | Pointer → ContactInfo | Associated contact information                    |
 
-Currently, two official plugins are available:
+## Class: ContactInfo
+| Field Name       | Type   | Description                        |
+| ---------------- | ------ | ---------------------------------- |
+| objectId         | String | Unique identifier (auto-generated) |
+| Name             | String | Contact person's name              |
+| PhoneNumber      | String | Contact phone number               |
+| Email            | String | Contact email address              |
+| ServiceLocations | String | Areas serviced                     |
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Relationship Diagram:
+Tasks
+-----
+objectId
+Description
+Location
+Openings
+CertificateAid
+trainingNeeded
+contact  -------------------->
+                               ContactInfo
+                               ------------
+                               objectId
+                               Name
+                               PhoneNumber
+                               Email
+                               ServiceLocations
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Component Tree Diagram:
+App
+ ├── TaskList
+ │     ├── Task
+ │
+ └── Contact

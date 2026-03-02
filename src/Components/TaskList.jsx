@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { getHouses } from "../services/housesService";
-import House from "./House";
+import { getTasks } from "../services/tasksService";
+import Task from "./Task";
 
-export default function HouseList() {
-  const [houses, setHouses] = useState([]);
+export default function TaskList() {
+  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -15,10 +15,10 @@ export default function HouseList() {
         setLoading(true);
         setErrorMsg("");
 
-        const data = await getHouses({ limit: 50 });
-        if (!cancelled) setHouses(data);
+        const data = await getTasks({ limit: 50 });
+        if (!cancelled) setTasks(data);
       } catch (err) {
-        if (!cancelled) setErrorMsg(err?.message ?? "Failed to load houses");
+        if (!cancelled) setErrorMsg(err?.message ?? "Failed to load tasks");
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -32,12 +32,12 @@ export default function HouseList() {
 
   if (loading) return <p>Loading…</p>;
   if (errorMsg) return <p style={{ color: "crimson" }}>{errorMsg}</p>;
-  if (houses.length === 0) return <p>No houses found.</p>;
+  if (tasks.length === 0) return <p>No tasks found.</p>;
 
   return (
     <div style={{ display: "grid", gap: 12 }}>
-      {houses.map((h) => (
-        <House key={h.id} house={h} />
+      {tasks.map((t) => (
+        <Task key={t.id} task={t} />
       ))}
     </div>
   );
