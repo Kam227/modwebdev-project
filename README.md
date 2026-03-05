@@ -13,7 +13,7 @@ In this update, we replaced the original House components with a new Tasks syste
 | trainingNeeded | Boolean/String        | Indicates if training is required                 |
 | contact        | Pointer → ContactInfo | Associated contact information                    |
 
-# Class: Contact
+# Class: ContactInfo
 | Field Name       | Type   | Description                        |
 | ---------------- | ------ | ---------------------------------- |
 | objectId         | String | Unique identifier (auto-generated) |
