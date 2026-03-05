@@ -2,7 +2,7 @@
 In this update, we replaced the original House components with a new Tasks system that better matches the project requirements. We created a Tasks class and connected it to a ContactInfo class using a Pointer relationship in Parse. We also added React Router so users can click on a task’s contact information and navigate to a separate Contact page. The project now uses two Parse models, properly loads asynchronous data with hooks, and separates components more clearly based on responsibility.
 
 ## UML Diagram
-* Class: Tasks 
+# Class: Tasks 
 | Field Name     | Type                  | Description                                       |
 | -------------- | --------------------- | ------------------------------------------------- |
 | objectId       | String                | Unique identifier (auto-generated)                |
@@ -13,7 +13,7 @@ In this update, we replaced the original House components with a new Tasks syste
 | trainingNeeded | Boolean/String        | Indicates if training is required                 |
 | contact        | Pointer → ContactInfo | Associated contact information                    |
 
-* Class: Contact
+# Class: Contact
 | Field Name       | Type   | Description                        |
 | ---------------- | ------ | ---------------------------------- |
 | objectId         | String | Unique identifier (auto-generated) |
