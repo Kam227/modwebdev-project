@@ -17,7 +17,7 @@ export default function App() {
               </>
             }
           />
-          <Route path="/contacts/:id" element={<Contact />} />
+          <Route path="/contacts/:id" element={<Contact />} /> //to specifc contact
         </Routes>
       </div>
     </BrowserRouter>
