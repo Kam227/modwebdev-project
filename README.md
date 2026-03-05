@@ -1,5 +1,5 @@
 ## Summary of Changes:
-In this update, I replaced the original House components with a new Tasks system that better matches the project requirements. I created a Tasks class and connected it to a ContactInfo class using a Pointer relationship in Parse. I also added React Router so users can click on a task’s contact information and navigate to a separate Contact page. The project now uses two Parse models, properly loads asynchronous data with hooks, and separates components more clearly based on responsibility.
+In this update, we replaced the original House components with a new Tasks system that better matches the project requirements. We created a Tasks class and connected it to a ContactInfo class using a Pointer relationship in Parse. We also added React Router so users can click on a task’s contact information and navigate to a separate Contact page. The project now uses two Parse models, properly loads asynchronous data with hooks, and separates components more clearly based on responsibility.
 
 ## Class: Tasks
 | Field Name     | Type                  | Description                                       |
