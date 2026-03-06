@@ -8,8 +8,12 @@ export default function TaskList() {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
+    /**
+     * Effect to load tasks when the component mounts. 
+     * It fetches a list of tasks from the API and updates the state accordingly. 
+     * It also handles loading and error states to provide feedback to the user.
+     */
     let cancelled = false;
-
     async function load() {
       try {
         setLoading(true);
@@ -30,6 +34,9 @@ export default function TaskList() {
     };
   }, []);
 
+  /**
+   * Render loading, error, or list of tasks based on the current state.
+   */
   if (loading) return <p>Loading tasks...</p>;
   if (errorMsg) return <p style={{ color: "crimson" }}>{errorMsg}</p>;
   if (tasks.length === 0) return <p>No tasks found.</p>;

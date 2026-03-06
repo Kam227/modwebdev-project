@@ -2,6 +2,11 @@ import { Link } from "react-router-dom";
 
 export default function Task({ task }) {
   return (
+    /**
+     * Component to display details of a single task. It shows the task description, 
+     * location, openings, training requirements, certificate aid, and contact 
+     * information.
+     */
     <div style={{ border: "1px solid #ddd", borderRadius: 10, padding: 12 }}>
       <div style={{ fontWeight: 700, marginBottom: 6 }}>
         {task.description || "Untitled Task"}

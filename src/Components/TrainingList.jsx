@@ -8,6 +8,11 @@ export default function TrainingList() {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
+    /**
+     * Effect to load trainings when the component mounts.
+     * It fetches a list of trainings from the API and updates the state accordingly.
+     * It also handles loading and error states to provide feedback to the user.
+     */
     let cancelled = false;
 
     async function load() {
@@ -30,6 +35,9 @@ export default function TrainingList() {
     };
   }, []);
 
+  /**
+   * Render loading, error, or list of trainings based on the current state.
+   */
   if (loading) return <p>Loading trainings...</p>;
   if (errorMsg) return <p style={{ color: "crimson" }}>{errorMsg}</p>;
   if (trainings.length === 0) return <p>No trainings found.</p>;

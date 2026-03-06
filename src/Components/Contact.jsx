@@ -8,6 +8,9 @@ export default function Contact() {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
+  /**
+   * Effect to load contact details when the component mounts or when the ID changes.
+   */
   useEffect(() => {
     let cancelled = false;
 
@@ -30,6 +33,9 @@ export default function Contact() {
     };
   }, [id]);
 
+  /**
+   * Render loading, error, or contact details based on the current state.
+   */
   if (loading) return <p>Loading…</p>;
   if (errorMsg) return <p style={{ color: "crimson" }}>{errorMsg}</p>;
   if (!contact) return <p>Contact not found.</p>;

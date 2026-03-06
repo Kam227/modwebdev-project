@@ -17,6 +17,10 @@ function HomePage() {
   );
 }
 
+/**
+ * Main component that sets up routing for the volunteer app.
+ * It defines routes for the home page, task list, training list, and contact page.
+ */
 export default function Component() {
   return (
     <BrowserRouter>
