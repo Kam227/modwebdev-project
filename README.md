@@ -1,21 +1,30 @@
-## Summary of Changes:
-In this update, we replaced the original House components with a new Tasks system that better matches the project requirements. We created a Tasks class and connected it to a ContactInfo class using a Pointer relationship in Parse. We also added React Router so users can click on a task’s contact information and navigate to a separate Contact page. The project now uses two Parse models, properly loads asynchronous data with hooks, and separates components more clearly based on responsibility.
+## Summary of Changes
+In this update, the application structure was reorganized to better match a new component hierarchy. A main `Component` router was added to handle navigation between different parts of the app. The system now supports both **Tasks** and **Trainings**, each with their own list components and routes. Tasks are still connected to the **ContactInfo** class using a Pointer relationship in Parse, allowing users to navigate to a contact page when selecting contact information. The project now loads data asynchronously from Parse for both tasks and trainings.
 
 ## UML Diagram
-# Class: Tasks 
-| Field Name     | Type                  | Description                                       |
-| -------------- | --------------------- | ------------------------------------------------- |
-| objectId       | String                | Unique identifier (auto-generated)                |
-| Description    | String                | Description of the task                           |
-| Location       | String                | Task location                                     |
-| Openings       | Number                | Number of available openings                      |
-| CertificateAid | Boolean/String        | Indicates if certification assistance is provided |
-| trainingNeeded | Boolean/String        | Indicates if training is required                 |
-| contact        | Pointer → ContactInfo | Associated contact information                    |
 
-# Class: ContactInfo
+### Class: Tasks
+| Field Name        | Type                  | Description                                       |
+|-------------------|----------------------|---------------------------------------------------|
+| objectId          | String               | Unique identifier (auto-generated)                |
+| Description       | String               | Description of the task                           |
+| Location          | String               | Task location                                     |
+| Openings          | Number               | Number of available openings                      |
+| CertificateAid    | Boolean/String       | Indicates if certification assistance is provided |
+| trainingNeeded    | Boolean/String       | Indicates if training is required                 |
+| contact           | Pointer → ContactInfo| Associated contact information                    |
+
+### Class: Trainings
+| Field Name     | Type   | Description                              |
+|----------------|--------|------------------------------------------|
+| objectId       | String | Unique identifier (auto-generated)       |
+| Description    | String | Description of the training session      |
+| Location       | String | Where the training takes place           |
+| maxCapacity    | Number | Maximum number of participants allowed   |
+
+### Class: ContactInfo
 | Field Name       | Type   | Description                        |
-| ---------------- | ------ | ---------------------------------- |
+|------------------|--------|------------------------------------|
 | objectId         | String | Unique identifier (auto-generated) |
 | Name             | String | Contact person's name              |
 | PhoneNumber      | String | Contact phone number               |

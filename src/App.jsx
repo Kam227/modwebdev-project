@@ -1,25 +1,6 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TaskList from "./components/TaskList";
-import Contact from "./components/Contact";
+import Component from "./components/Component";
 
 export default function App() {
-  return (
-    <BrowserRouter>
-      <div style={{ padding: 16 }}>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <h1>Tasks</h1>
-                <TaskList />
-              </>
-            }
-          />
-          <Route path="/contacts/:id" element={<Contact />} /> //to specifc contact
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
+  return <Component />;
 }

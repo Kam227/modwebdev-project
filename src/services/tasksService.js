@@ -2,6 +2,7 @@ import Parse from "./parseClient";
 
 function toContactDTO(obj) {
   if (!obj) return null;
+
   return {
     id: obj.id,
     name: obj.get("Name") ?? "",
@@ -14,7 +15,6 @@ function toContactDTO(obj) {
 function toTaskDTO(obj) {
   return {
     id: obj.id,
-
     certificateAid: obj.get("CertificateAid") ?? null,
     trainingNeeded: obj.get("trainingNeeded") ?? null,
     description: obj.get("Description") ?? "",
@@ -27,7 +27,6 @@ function toTaskDTO(obj) {
 export async function getTasks({ limit = 50 } = {}) {
   const query = new Parse.Query("Tasks");
   query.limit(limit);
-
   query.include("contact");
 
   const results = await query.find();

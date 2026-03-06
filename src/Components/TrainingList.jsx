@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { getTasks } from "../services/tasksService";
-import Task from "./Task";
+import { getTrainings } from "../services/trainingsService";
+import Training from "./Training";
 
-export default function TaskList() {
-  const [tasks, setTasks] = useState([]);
+export default function TrainingList() {
+  const [trainings, setTrainings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -14,10 +14,10 @@ export default function TaskList() {
       try {
         setLoading(true);
         setErrorMsg("");
-        const data = await getTasks({ limit: 50 });
-        if (!cancelled) setTasks(data);
+        const data = await getTrainings({ limit: 50 });
+        if (!cancelled) setTrainings(data);
       } catch (err) {
-        if (!cancelled) setErrorMsg(err?.message ?? "Failed to load tasks");
+        if (!cancelled) setErrorMsg(err?.message ?? "Failed to load trainings");
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -30,14 +30,14 @@ export default function TaskList() {
     };
   }, []);
 
-  if (loading) return <p>Loading tasks...</p>;
+  if (loading) return <p>Loading trainings...</p>;
   if (errorMsg) return <p style={{ color: "crimson" }}>{errorMsg}</p>;
-  if (tasks.length === 0) return <p>No tasks found.</p>;
+  if (trainings.length === 0) return <p>No trainings found.</p>;
 
   return (
     <div className="grid">
-      {tasks.map((task) => (
-        <Task key={task.id} task={task} />
+      {trainings.map((training) => (
+        <Training key={training.id} training={training} />
       ))}
     </div>
   );
