@@ -1,6 +1,13 @@
 ## Summary of Changes
 In this update, the application structure was reorganized to better match a new component hierarchy. A main `Component` router was added to handle navigation between different parts of the app. The system now supports both **Tasks** and **Trainings**, each with their own list components and routes. Tasks are still connected to the **ContactInfo** class using a Pointer relationship in Parse, allowing users to navigate to a contact page when selecting contact information. The project now loads data asynchronously from Parse for both tasks and trainings.
 
+## Required Packages
+- react
+- react-dom
+- react-router-dom
+- parse
+- vite
+
 ## UML Diagram
 
 ### Class: Tasks
