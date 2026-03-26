@@ -5,18 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
  
-## [Pre-released] - 2026-03-06
-In this update, the application structure was reorganized to better match a new component hierarchy. A main Component router was added to handle navigation between different parts of the app. The system now supports both Tasks and Trainings, each with their own list components and routes. Tasks are still connected to the ContactInfo class using a Pointer relationship in Parse, allowing users to navigate to a contact page when selecting contact information. The project now loads data asynchronously from Parse for both tasks and trainings.
- 
+## [v0.3.0] - 2026-03-27
+In this update, authentication was integrated into the application using Parse. Users can now register and log in through dedicated authentication pages. Protected routes were implemented to restrict access to core pages like tasks, trainings, and contacts unless the user is authenticated. Routing was updated to include authentication paths and handle redirects based on login status, improving both security and overall user flow.
+
 ### Added
-- Application routing for navigating between components.
-- Database connection for retrieving project data.
-- Data parsing logic for processing database responses.
-- Development build setup using Vite.
+- User authentication (register and login) using Parse.
+- ProtectedRoute component to restrict access to authenticated users.
+- AuthRoute component to prevent logged-in users from accessing auth pages.
+- Authentication pages for register and login.
 
 ### Changed
-- Updated application layout to support the new routing structure.
-- Refactored component organization for better maintainability.
+- Updated routing to include authentication paths.
+- Modified navigation flow to redirect users based on authentication state.
 
 ### Fixed
-- Fixed component structure to properly align with the two main components.
+- Fixed navigation issues where unauthorized users could access protected routes.
+- Fixed routing behavior to properly handle redirects for both authenticated and unauthenticated users.
