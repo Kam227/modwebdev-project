@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import AuthForm from "./AuthForm";
 import { createUser } from "../../services/AuthService";
 
+// Handles user registration logic
 const AuthRegister = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // used to redirect after successful register
 
   const [newUser, setNewUser] = useState({
     firstName: "",
@@ -13,6 +14,7 @@ const AuthRegister = () => {
     password: "",
   });
 
+  // Updates state when user types into form
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
 
@@ -22,6 +24,7 @@ const AuthRegister = () => {
     });
   };
 
+  // Handles form submission
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 

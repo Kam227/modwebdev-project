@@ -1,3 +1,5 @@
+// Reusable form component for both login and registration
+// isRegister determines whether to show first/last name fields
 const AuthForm = ({ user, onChange, onSubmit, isRegister }) => {
   return (
     <div>

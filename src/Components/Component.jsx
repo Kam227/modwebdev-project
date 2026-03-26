@@ -36,10 +36,15 @@ function HomePage() {
   );
 }
 
+/**
+ * Main router component
+ * Handles all navigation, including authentication and protected routes
+ */
 export default function Component() {
   return (
     <BrowserRouter>
       <div style={{ padding: 16 }}>
+        {/* Auth routes (blocked if already logged in) */}
         <Routes>
           <Route
             path="/auth"
@@ -60,6 +65,7 @@ export default function Component() {
             }
           />
 
+          {/* Protected routes (require login) */}
           <Route
             path="/"
             element={

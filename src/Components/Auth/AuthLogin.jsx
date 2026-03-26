@@ -3,14 +3,17 @@ import { useNavigate } from "react-router-dom";
 import AuthForm from "./AuthForm";
 import { loginUser } from "../../services/AuthService";
 
+// Handles user login logic
 const AuthLogin = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // redirect after login
 
+  // State for login credentials
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
 
+  // Updates state as user types
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
 
@@ -20,6 +23,7 @@ const AuthLogin = () => {
     });
   };
 
+  // Handles login form submission
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
