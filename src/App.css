@@ -1,0 +1,29 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 1rem;
+}
+
+.grid {
+  display: grid;
+  gap: 12px;
+  justify-content: center;
+}
+
+.card {
+  padding: 2em;
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+.read-the-docs {
+  color: #888;
+}
