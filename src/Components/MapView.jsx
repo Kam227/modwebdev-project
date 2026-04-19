@@ -277,7 +277,10 @@ export default function MapView() {
                           `${u.firstName} ${u.lastName}`.trim() || "User"
                         }
                         sub={u.email}
-                        onClick={() => clearSearch()}
+                        onClick={() => {
+                          clearSearch()
+                          navigate(`/profile/${u.id}`);
+                        }}
                       />
                     ))}
                   </ResultSection>
@@ -308,6 +311,28 @@ export default function MapView() {
         }}
       >
         Logout
+      </button>
+
+      {/* Personal profile page */}
+      <button
+        onClick={() => navigate("/profile/:id")}
+        style={{
+          position: "absolute",
+          top: 20,
+          right: 130,
+          background: "#fff",
+          border: "none",
+          borderRadius: 999,
+          padding: "10px 20px",
+          fontSize: 14,
+          cursor: "pointer",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.18)",
+          zIndex: 10,
+          fontWeight: 500,
+          color: "#333",
+        }}
+      >
+        Profile
       </button>
 
       {/* Legend */}

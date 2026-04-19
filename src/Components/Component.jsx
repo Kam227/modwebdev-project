@@ -6,7 +6,7 @@ import AuthRegister from "./Auth/AuthRegister";
 import AuthLogin from "./Auth/AuthLogin";
 import ProtectedRoute from "./ProtectedRoute";
 import AuthRoute from "./Auth/AuthRoute";
-
+import Profile from "./Profile";
 export default function Component() {
   return (
     <BrowserRouter>
@@ -24,6 +24,10 @@ export default function Component() {
           path="/contacts/:id"
           element={<ProtectedRoute children={<ContactPage />} />}
         />
+
+        {/* profile screen */}
+        <Route path="/profile/:id" element= {<ProtectedRoute children={<Profile />} />} />
+
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
