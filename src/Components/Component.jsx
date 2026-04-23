@@ -7,6 +7,9 @@ import AuthLogin from "./Auth/AuthLogin";
 import ProtectedRoute from "./ProtectedRoute";
 import AuthRoute from "./Auth/AuthRoute";
 import Profile from "./Profile";
+import ContactList from "./ContactList";
+import Messaging from "./Messaging";
+
 export default function Component() {
   return (
     <BrowserRouter>
@@ -26,9 +29,11 @@ export default function Component() {
         />
 
         {/* profile screen */}
-        <Route path="/profile/:id" element= {<ProtectedRoute children={<Profile />} />} />
-
-
+        <Route path="/profile/${user.id}" element= {<ProtectedRoute children={<Profile />} />} />
+        {/* contacts */}
+        <Route path="/contacts" element={<ContactList />} />
+         {/* chat window */}
+        <Route path="/chat/:id" element={<Messaging />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

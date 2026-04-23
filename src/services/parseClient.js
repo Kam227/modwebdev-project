@@ -7,4 +7,6 @@ Parse.initialize(
   import.meta.env.VITE_PARSE_JS_KEY
 );
 
+Parse.liveQueryServerURL = import.meta.env.VITE_PARSE_LIVE_QUERY_URL
+
 export default Parse;

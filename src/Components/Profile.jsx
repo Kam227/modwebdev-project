@@ -14,6 +14,12 @@ export default function Profile() {
     const [loca,setloca] = useState(current.get("preferredLocation")||""); // controls actual input val
     const [editBio,setEditBio] = useState(null);//controls edit mode
     const [bio,setBio] = useState(current.get("bio")||""); // controls actual input val
+    const [editExp,setEditExp] = useState(null);//controls edit mode
+    const [exp,setExp] = useState(current.get("experience")||[]); // controls actual input val
+    const [newExp, setNewExp] = useState("");
+    const [editCert,setEditCert] = useState(null);//controls edit mode
+    const [cert,setCert] = useState(current.get("certificate")||[]); // controls actual input val
+    const [newCert, setNewCert] = useState("");
     const { id } = useParams();
     const isOwnProfile = !id || id === current.id;
     const [profileUser, setProfileUser] = useState(null);
@@ -37,9 +43,13 @@ async function save() {
       try {
         current.set("preferredLocation", loca);
         current.set ("bio", bio );
+        current.set("experience",exp);
+        current.set("certificate",cert);
         await current.save();
         setEditLoca(false);
         setEditBio(false);
+        setEditExp(false);
+        setEditCert(false);
       } catch (err) {
         console.error("Error saving:", err);
       }
@@ -184,7 +194,7 @@ return (
     />
   )}
 </div>
-{/*Experience */}
+{/* Experience */}
 <div
   style={{
     border: "1px solid #ddd",
@@ -195,7 +205,7 @@ return (
     marginTop: 30
   }}
 >
-  {/* Header row: title + edit/save/cancel */}
+  {/* Header row */}
   <div
     style={{
       display: "flex",
@@ -206,12 +216,13 @@ return (
   >
     <h2 style={{ margin: 0 }}>Experience</h2>
 
-    {!editBio ? ( isOwnProfile  && <button onClick={() => setEditBio(true)}>Edit</button>
+    {!editExp ? (
+      <button onClick={() => setEditExp(true)}>Edit</button>
     ) : (
       <div>
         <button onClick={save}>Save</button>
         <button
-          onClick={() => setEditBio(false)}
+          onClick={() => setEditExp(false)}
           style={{ marginLeft: 10 }}
         >
           Cancel
@@ -220,79 +231,189 @@ return (
     )}
   </div>
 
-  {/* Value or Input */}
-  {!editBio ? (
-    <p>{current.get("bio") || "Not provided"}</p>
+  {/* Display mode: map over array */}
+  {!editExp ? (
+    exp.length > 0 ? (
+      <ul>
+        {exp.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+    ) : (
+      <p>No experiences added yet.</p>
+    )
+
   ) : (
-    <input
-      type="text"
-      value={bio}
-      onChange={(e) => setBio(e.target.value)}
-      style={{
-        width: "100%",
-        padding: 8,
-        borderRadius: 6,
-        border: "1px solid #ccc"
-      }}
-    />
+    // Edit mode
+    <div>
+      {/* Existing items - each editable */}
+      {exp.map((item, index) => (
+        <div key={index} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+          <input
+            type="text"
+            value={item}
+            onChange={(e) => {
+              const updated = [...exp];
+              updated[index] = e.target.value;
+              setExp(updated);
+            }}
+            style={{
+              flex: 1,
+              padding: 8,
+              borderRadius: 6,
+              border: "1px solid #ccc"
+            }}
+          />
+          <button
+            onClick={() => {
+              const updated = exp.filter((_, i) => i !== index);
+              setExp(updated);
+            }}
+            style={{ color: "red" }}
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+
+      {/* Add new item */}
+      <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+        <input
+          type="text"
+          value={newExp}
+          onChange={(e) => setNewExp(e.target.value)}
+          placeholder="Add new experience..."
+          style={{
+            flex: 1,
+            padding: 8,
+            borderRadius: 6,
+            border: "1px solid #ccc"
+          }}
+        />
+        <button
+          onClick={() => {
+            if (newExp.trim()) {
+              setExp([...exp, newExp.trim()]);
+              setNewExp("");
+            }
+          }}
+        >
+          Add
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+{/* certifications */}
+<div
+  style={{
+    border: "1px solid #ddd",
+    borderRadius: 10,
+    padding: 16,
+    width: "100%",
+    maxWidth: 600,
+    marginTop: 30
+  }}
+>
+  {/* Header row */}
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 10
+    }}
+  >
+    <h2 style={{ margin: 0 }}>Certifications</h2>
+
+    {!editCert ? (
+      <button onClick={() => setEditCert(true)}>Edit</button>
+    ) : (
+      <div>
+        <button onClick={save}>Save</button>
+        <button
+          onClick={() => setEditCert(false)}
+          style={{ marginLeft: 10 }}
+        >
+          Cancel
+        </button>
+      </div>
+    )}
+  </div>
+
+  {/* Display mode: map over array */}
+  {!editCert ? (
+    cert.length > 0 ? (
+      <ul>
+        {cert.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+    ) : (
+      <p>No certifications added yet.</p>
+    )
+
+  ) : (
+    // Edit mode
+    <div>
+      {/* Existing items - each editable */}
+      {cert.map((item, index) => (
+        <div key={index} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+          <input
+            type="text"
+            value={item}
+            onChange={(e) => {
+              const updated = [...cert];
+              updated[index] = e.target.value;
+              setCert(updated);
+            }}
+            style={{
+              flex: 1,
+              padding: 8,
+              borderRadius: 6,
+              border: "1px solid #ccc"
+            }}
+          />
+          <button
+            onClick={() => {
+              const updated = cert.filter((_, i) => i !== index);
+              setCert(updated);
+            }}
+            style={{ color: "red" }}
+          >
+            Remove
+          </button>
+        </div>
+      ))}
+
+      {/* Add new item */}
+      <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+        <input
+          type="text"
+          value={newCert}
+          onChange={(e) => setNewCert(e.target.value)}
+          placeholder="Add new accomplishment..."
+          style={{
+            flex: 1,
+            padding: 8,
+            borderRadius: 6,
+            border: "1px solid #ccc"
+          }}
+        />
+        <button
+          onClick={() => {
+            if (newCert.trim()) {
+              setCert([...cert, newCert.trim()]);
+              setNewCert("");
+            }
+          }}
+        >
+          Add
+        </button>
+      </div>
+    </div>
   )}
 </div>
     </div>
   );
 }
-
-
-
-      // {/* Bio */}
-      // <div style={{ display: "flex",
-      // flexDirection: "column",
-      // alignItems: "left",
-      // paddingTop: 0, textAlign: "left", marginTop: 0, width: "100%", maxWidth: 600 }}>
-      //   <h2>Biography: </h2>
-      //   <p style= {{paddingTop: 0}}> {current.get("Bio")||"Not provided"} this will be editable.</p>
-      // </div>
-//   useEffect(() => {
-//     let cancelled = false;
-
-//     async function load() {
-//       try {
-//         setLoading(true);
-//         setErrorMsg("");
-//         const data = await getContactById(id);
-//         if (!cancelled) setContact(data);
-//       } catch (err) {
-//         if (!cancelled) setErrorMsg(err?.message ?? "Failed to load contact");
-//       } finally {
-//         if (!cancelled) setLoading(false);
-//       }
-//     }
-
-//     load();
-//     return () => {
-//       cancelled = true;
-//     };
-//   }, [id]);
-
-//   /**
-//    * Render loading, error, or contact details based on the current state.
-//    */
-//   if (loading) return <p>Loading…</p>;
-//   if (errorMsg) return <p style={{ color: "crimson" }}>{errorMsg}</p>;
-//   if (!contact) return <p>Contact not found.</p>;
-// */
-//  // return (
-//     <header>
-//          <h1 style={{ marginTop: 12 }}>{User.lastName[0] || "Contact"}</h1>
-//     </header>
-//     <div style={{ padding: 16 }}>
-//       <Link to="/">← Back</Link>
-//       <h1 style={{ marginTop: 12 }}>{contact.name || "Contact"}</h1>
-
-//       <div style={{ border: "1px solid #ddd", borderRadius: 10, padding: 12 }}>
-//         <div><b>Phone:</b> {contact.phoneNumber || "—"}</div>
-//         <div><b>Email:</b> {contact.email || "—"}</div>
-//         <div><b>Service Locations:</b> {contact.serviceLocations || "—"}</div>
-//       </div>
-//     </div>
-//   //);
-// //}

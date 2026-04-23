@@ -315,7 +315,7 @@ export default function MapView() {
 
       {/* Personal profile page */}
       <button
-        onClick={() => navigate("/profile/:id")}
+        onClick={() => navigate("/profile/${user.id}")}
         style={{
           position: "absolute",
           top: 20,

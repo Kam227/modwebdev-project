@@ -1,12 +1,24 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { getContactById } from "../services/contactsService";
+import Parse from "parse";
 
 export default function Contact() {
   const { id } = useParams();
   const [contact, setContact] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
+  const navigate = useNavigate();
+
+const handleMessage = async () => {
+  const userQuery = new Parse.Query(Parse.User);
+  const user = await userQuery.first();
+  if (user) {
+    navigate(`/chat/${user.id}`);
+  } else {
+    alert("This contact doesn't have an account yet!");
+  }
+};
 
   /**
    * Effect to load contact details when the component mounts or when the ID changes.
@@ -49,6 +61,7 @@ export default function Contact() {
         <div><b>Phone:</b> {contact.phoneNumber || "—"}</div>
         <div><b>Email:</b> {contact.email || "—"}</div>
         <div><b>Service Locations:</b> {contact.serviceLocations || "—"}</div>
+        <button onClick={handleMessage}>Message</button>
       </div>
     </div>
   );
