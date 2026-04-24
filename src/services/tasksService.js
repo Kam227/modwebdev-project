@@ -9,6 +9,7 @@ function toContactDTO(obj) {
     phoneNumber: obj.get("PhoneNumber") ?? "",
     email: obj.get("Email") ?? "",
     serviceLocations: obj.get("ServiceLocations") ?? "",
+    userId: obj.get("contact")?.id ?? null,
   };
 }
 
@@ -20,6 +21,7 @@ function toCertificateDTO(obj) {
 }
 
 function toTaskDTO(obj) {
+  const rsvps = obj.get("rsvps") ?? [];
   return {
     id: obj.id,
     certificateAid: toCertificateDTO(obj.get("CertificateAid")),
@@ -30,6 +32,7 @@ function toTaskDTO(obj) {
     contact: toContactDTO(obj.get("contact")),
     latitude: obj.get("Latitude") ?? null,
     longitude: obj.get("Longitude") ?? null,
+    rsvpUserIds: rsvps.map((u) => u.id ?? u.objectId).filter(Boolean),
   };
 }
 
@@ -37,6 +40,7 @@ export async function getTasks({ limit = 50 } = {}) {
   const query = new Parse.Query("Tasks");
   query.limit(limit);
   query.include("contact");
+  query.include("contact.contact");
   query.include("CertificateAid");
 
   const results = await query.find({ useMasterKey: false });

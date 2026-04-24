@@ -2,12 +2,15 @@ import Parse from "./parseClient";
 
 export async function searchAll(term) {
   const t = term.trim();
-  if (!t) return { tasks: [], trainings: [], users: [], contacts: [] };
+  if (!t) return { tasks: [], trainings: [], users: [] };
+
+  const currentUser = Parse.User.current();
 
   // Tasks
   const taskQuery = new Parse.Query("Tasks");
   taskQuery.matches("Description", t, "i");
   taskQuery.include("contact");
+  taskQuery.include("contact.contact");
   taskQuery.limit(6);
 
   // Trainings
@@ -15,26 +18,21 @@ export async function searchAll(term) {
   trainingQuery.matches("Description", t, "i");
   trainingQuery.limit(6);
 
-  // Users — search firstName OR lastName
+  // Users — search _User by firstName OR lastName, exclude self
   const firstNameQuery = new Parse.Query(Parse.User);
   firstNameQuery.matches("firstName", t, "i");
   const lastNameQuery = new Parse.Query(Parse.User);
   lastNameQuery.matches("lastName", t, "i");
   const userQuery = Parse.Query.or(firstNameQuery, lastNameQuery);
-  userQuery.limit(6);
+  userQuery.limit(20);
 
-  // Contacts (employers)
-  const contactQuery = new Parse.Query("ContactInfo");
-  contactQuery.matches("Name", t, "i");
-  contactQuery.limit(6);
+  const [taskResults, trainingResults, userResults] = await Promise.all([
+    taskQuery.find(),
+    trainingQuery.find(),
+    userQuery.find().catch(() => []),
+  ]);
 
-  const [taskResults, trainingResults, userResults, contactResults] =
-    await Promise.all([
-      taskQuery.find(),
-      trainingQuery.find(),
-      userQuery.find().catch(() => []), // may fail if Parse ACL restricts User reads
-      contactQuery.find(),
-    ]);
+  const filteredUsers = userResults.filter((u) => u.id !== currentUser.id);
 
   return {
     tasks: taskResults.map((obj) => {
@@ -54,6 +52,7 @@ export async function searchAll(term) {
               name: contact.get("Name") ?? "",
               phoneNumber: contact.get("PhoneNumber") ?? "",
               email: contact.get("Email") ?? "",
+              userId: contact.get("contact")?.id ?? null,
             }
           : null,
       };
@@ -66,18 +65,10 @@ export async function searchAll(term) {
       latitude: obj.get("Latitude") ?? null,
       longitude: obj.get("Longitude") ?? null,
     })),
-    users: userResults.map((obj) => ({
+    users: filteredUsers.map((obj) => ({
       id: obj.id,
       firstName: obj.get("firstName") ?? "",
       lastName: obj.get("lastName") ?? "",
-      email: obj.get("email") ?? "",
-    })),
-    contacts: contactResults.map((obj) => ({
-      id: obj.id,
-      name: obj.get("Name") ?? "",
-      email: obj.get("Email") ?? "",
-      phoneNumber: obj.get("PhoneNumber") ?? "",
-      serviceLocations: obj.get("ServiceLocations") ?? "",
     })),
   };
 }

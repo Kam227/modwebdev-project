@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Parse from "parse";
+import Parse from "../services/parseClient";
 
 const ContactList = () => {
   const [contacts, setContacts] = useState([]);

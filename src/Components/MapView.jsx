@@ -5,6 +5,7 @@ import { getTasks } from "../services/tasksService";
 import { getTrainings } from "../services/trainingsService";
 import { searchAll } from "../services/searchService";
 import { logoutUser } from "../services/AuthService";
+import { getConversations, getUnreadCount, subscribeToIncoming } from "../services/MessagingService";
 import TaskModal from "./TaskModal";
 import TrainingModal from "./TrainingModal";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -27,6 +28,10 @@ export default function MapView() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showInbox, setShowInbox] = useState(false);
+  const [convs, setConvs] = useState([]);
+  const [convsLoading, setConvsLoading] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const searchRef = useRef(null);
   const navigate = useNavigate();
 
@@ -71,6 +76,24 @@ export default function MapView() {
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
+  useEffect(() => {
+    let sub;
+    getUnreadCount().then(setUnreadCount);
+    subscribeToIncoming(() => getUnreadCount().then(setUnreadCount)).then((s) => { sub = s; });
+    return () => { sub?.unsubscribe(); };
+  }, []);
+
+  useEffect(() => {
+    if (!showInbox) {
+      getUnreadCount().then(setUnreadCount);
+      return;
+    }
+    setConvsLoading(true);
+    getConversations()
+      .then(setConvs)
+      .finally(() => setConvsLoading(false));
+  }, [showInbox]);
+
   function flyTo(lng, lat) {
     setViewState((v) => ({ ...v, longitude: lng, latitude: lat, zoom: 14 }));
   }
@@ -90,8 +113,7 @@ export default function MapView() {
     searchResults &&
     (searchResults.tasks.length ||
       searchResults.trainings.length ||
-      searchResults.users.length ||
-      searchResults.contacts.length);
+      searchResults.users.length);
 
   return (
     <div style={{ position: "fixed", inset: 0 }}>
@@ -253,32 +275,15 @@ export default function MapView() {
                     ))}
                   </ResultSection>
                 )}
-                {searchResults.contacts.length > 0 && (
-                  <ResultSection label="Employers & Contacts" color="#f59e0b">
-                    {searchResults.contacts.map((c) => (
-                      <ResultRow
-                        key={c.id}
-                        title={c.name || "Contact"}
-                        sub={c.email || c.serviceLocations}
-                        onClick={() => {
-                          clearSearch();
-                          navigate(`/contacts/${c.id}`);
-                        }}
-                      />
-                    ))}
-                  </ResultSection>
-                )}
-                {searchResults.users.length > 0 && (
+{searchResults.users.length > 0 && (
                   <ResultSection label="Users" color="#8b5cf6">
                     {searchResults.users.map((u) => (
                       <ResultRow
                         key={u.id}
-                        title={
-                          `${u.firstName} ${u.lastName}`.trim() || "User"
-                        }
-                        sub={u.email}
+                        title={`${u.firstName} ${u.lastName}`.trim() || "User"}
+                        sub={`${u.firstName} ${u.lastName}`.trim()}
                         onClick={() => {
-                          clearSearch()
+                          clearSearch();
                           navigate(`/profile/${u.id}`);
                         }}
                       />
@@ -315,7 +320,7 @@ export default function MapView() {
 
       {/* Personal profile page */}
       <button
-        onClick={() => navigate("/profile/${user.id}")}
+        onClick={() => navigate("/profile")}
         style={{
           position: "absolute",
           top: 20,
@@ -334,6 +339,163 @@ export default function MapView() {
       >
         Profile
       </button>
+
+      {/* Inbox button */}
+      <button
+        onClick={() => setShowInbox(true)}
+        style={{
+          position: "absolute",
+          top: 20,
+          right: 240,
+          background: "#fff",
+          border: "none",
+          borderRadius: 999,
+          padding: "10px 20px",
+          fontSize: 14,
+          cursor: "pointer",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.18)",
+          zIndex: 10,
+          fontWeight: 500,
+          color: "#333",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+        }}
+      >
+        Inbox
+        {unreadCount > 0 && (
+          <span style={{
+            background: "#ed4245",
+            color: "#fff",
+            borderRadius: 999,
+            fontSize: 11,
+            fontWeight: 700,
+            minWidth: 18,
+            height: 18,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "0 5px",
+          }}>
+            {unreadCount > 99 ? "99+" : unreadCount}
+          </span>
+        )}
+      </button>
+
+      {/* Inbox panel */}
+      {showInbox && (
+        <>
+          {/* Backdrop */}
+          <div
+            onClick={() => setShowInbox(false)}
+            style={{ position: "absolute", inset: 0, zIndex: 19 }}
+          />
+          {/* Panel */}
+          <div style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: 360,
+            height: "100%",
+            background: "#2b2d31",
+            zIndex: 20,
+            display: "flex",
+            flexDirection: "column",
+            boxShadow: "-4px 0 24px rgba(0,0,0,0.4)",
+          }}>
+            {/* Panel header */}
+            <div style={{
+              padding: "0 16px",
+              height: 52,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              borderBottom: "1px solid #1e1f22",
+              flexShrink: 0,
+            }}>
+              <span style={{ fontWeight: 700, fontSize: 16, color: "#f2f3f5" }}>Direct Messages</span>
+              <button
+                onClick={() => setShowInbox(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#b5bac1",
+                  fontSize: 20,
+                  cursor: "pointer",
+                  padding: 4,
+                  lineHeight: 1,
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Conversation list */}
+            <div style={{ flex: 1, overflowY: "auto" }}>
+              {convsLoading ? (
+                <p style={{ padding: 20, color: "#87898c", fontSize: 14, textAlign: "center" }}>Loading...</p>
+              ) : convs.length === 0 ? (
+                <p style={{ padding: 20, color: "#87898c", fontSize: 14, textAlign: "center" }}>No conversations yet.</p>
+              ) : (
+                convs.map(({ user, lastMessage, isSent }) => {
+                  const fn = user.get("firstName") || "";
+                  const ln = user.get("lastName") || "";
+                  const name = `${fn} ${ln}`.trim() || user.get("username") || "Unknown";
+                  const initials = name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
+                  const preview = lastMessage.get("text") || "";
+
+                  return (
+                    <div
+                      key={user.id}
+                      onClick={() => { setShowInbox(false); navigate(`/chat/${user.id}`); }}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        padding: "10px 16px",
+                        cursor: "pointer",
+                        borderRadius: 4,
+                        margin: "2px 8px",
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "#35373c")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    >
+                      <div style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: "50%",
+                        background: "#5865f2",
+                        color: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 700,
+                        fontSize: 15,
+                        flexShrink: 0,
+                      }}>
+                        {initials}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontWeight: 600, fontSize: 14, color: "#f2f3f5" }}>{name}</div>
+                        <div style={{
+                          fontSize: 12,
+                          color: "#87898c",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          marginTop: 2,
+                        }}>
+                          {isSent ? "You: " : ""}{preview}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Legend */}
       <div
@@ -358,7 +520,22 @@ export default function MapView() {
 
       {/* Modals */}
       {selectedTask && (
-        <TaskModal task={selectedTask} onClose={() => setSelectedTask(null)} />
+        <TaskModal
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
+          onRsvpChange={(taskId, userId, wasRsvpd) => {
+            setTasks((prev) => prev.map((t) => {
+              if (t.id !== taskId) return t;
+              const ids = t.rsvpUserIds ?? [];
+              return {
+                ...t,
+                rsvpUserIds: wasRsvpd
+                  ? ids.filter((id) => id !== userId)
+                  : [...ids, userId],
+              };
+            }));
+          }}
+        />
       )}
       {selectedTraining && (
         <TrainingModal

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { getContactById } from "../services/contactsService";
-import Parse from "parse";
+import Parse from "../services/parseClient";
 
 export default function Contact() {
   const { id } = useParams();
@@ -11,12 +11,21 @@ export default function Contact() {
   const navigate = useNavigate();
 
 const handleMessage = async () => {
-  const userQuery = new Parse.Query(Parse.User);
-  const user = await userQuery.first();
-  if (user) {
-    navigate(`/chat/${user.id}`);
-  } else {
-    alert("This contact doesn't have an account yet!");
+  if (contact.userId) {
+    navigate(`/chat/${contact.userId}`);
+    return;
+  }
+  try {
+    const userQuery = new Parse.Query(Parse.User);
+    userQuery.equalTo("username", contact.email);
+    const user = await userQuery.first();
+    if (user) {
+      navigate(`/chat/${user.id}`);
+    } else {
+      alert("This contact doesn't have an account yet!");
+    }
+  } catch (err) {
+    alert(`Error: ${err.message}`);
   }
 };
 
@@ -60,7 +69,7 @@ const handleMessage = async () => {
       <div style={{ border: "1px solid #ddd", borderRadius: 10, padding: 12 }}>
         <div><b>Phone:</b> {contact.phoneNumber || "—"}</div>
         <div><b>Email:</b> {contact.email || "—"}</div>
-        <div><b>Service Locations:</b> {contact.serviceLocations || "—"}</div>
+        <div><b>Service Locations:</b> {contact.serviceLocations?.length ? contact.serviceLocations.join(", ") : "—"}</div>
         <button onClick={handleMessage}>Message</button>
       </div>
     </div>

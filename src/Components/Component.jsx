@@ -9,6 +9,8 @@ import AuthRoute from "./Auth/AuthRoute";
 import Profile from "./Profile";
 import ContactList from "./ContactList";
 import Messaging from "./Messaging";
+import ConversationList from "./ConversationList";
+import SeedPage from "./SeedPage";
 
 export default function Component() {
   return (
@@ -29,11 +31,15 @@ export default function Component() {
         />
 
         {/* profile screen */}
-        <Route path="/profile/${user.id}" element= {<ProtectedRoute children={<Profile />} />} />
+        <Route path="/profile" element={<ProtectedRoute children={<Profile />} />} />
+        <Route path="/profile/:id" element={<ProtectedRoute children={<Profile />} />} />
         {/* contacts */}
         <Route path="/contacts" element={<ContactList />} />
-         {/* chat window */}
-        <Route path="/chat/:id" element={<Messaging />} />
+        {/* messages */}
+        <Route path="/messages" element={<ProtectedRoute children={<ConversationList />} />} />
+        {/* chat window */}
+        <Route path="/chat/:id" element={<ProtectedRoute children={<Messaging />} />} />
+        <Route path="/seed" element={<SeedPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

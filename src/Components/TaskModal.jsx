@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Parse from "../services/parseClient";
+import { toggleRsvp } from "../services/rsvpService";
 
-export default function TaskModal({ task, onClose }) {
+export default function TaskModal({ task, onClose, onRsvpChange }) {
   const [showCert, setShowCert] = useState(false);
 
   return (
@@ -18,6 +20,7 @@ export default function TaskModal({ task, onClose }) {
             task={task}
             onClose={onClose}
             onViewCert={() => setShowCert(true)}
+            onRsvpChange={onRsvpChange}
           />
         )}
       </div>
@@ -25,7 +28,33 @@ export default function TaskModal({ task, onClose }) {
   );
 }
 
-function TaskStage({ task, onClose, onViewCert }) {
+function TaskStage({ task, onClose, onViewCert, onRsvpChange }) {
+  const current = Parse.User.current();
+  const [rsvpd, setRsvpd] = useState(() =>
+    current ? (task.rsvpUserIds ?? []).includes(current.id) : false
+  );
+  const [rsvpCount, setRsvpCount] = useState(task.rsvpUserIds?.length ?? 0);
+  const [rsvpLoading, setRsvpLoading] = useState(false);
+
+  const spotsLeft = task.openings != null ? task.openings - rsvpCount : null;
+  const isFull = spotsLeft !== null && spotsLeft <= 0;
+
+  const handleRsvp = async () => {
+    if (!current || rsvpLoading || (isFull && !rsvpd)) return;
+    setRsvpLoading(true);
+    try {
+      await toggleRsvp(task.id, current.id, rsvpd);
+      const nextRsvpd = !rsvpd;
+      setRsvpd(nextRsvpd);
+      setRsvpCount((c) => rsvpd ? c - 1 : c + 1);
+      onRsvpChange?.(task.id, current.id, rsvpd);
+    } catch (e) {
+      console.error("RSVP error:", e);
+    } finally {
+      setRsvpLoading(false);
+    }
+  };
+
   return (
     <>
       <button onClick={onClose} style={styles.closeBtn}>✕</button>
@@ -54,17 +83,42 @@ function TaskStage({ task, onClose, onViewCert }) {
         </div>
       </div>
 
+      {/* RSVP section */}
+      <div style={styles.rsvpBox}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={styles.rsvpLabel}>Availability</div>
+            {task.openings != null && (
+              <div style={styles.rsvpCount}>
+                {rsvpCount} / {task.openings} spot{task.openings !== 1 ? "s" : ""} claimed
+              </div>
+            )}
+          </div>
+          <button
+            onClick={handleRsvp}
+            disabled={rsvpLoading || (isFull && !rsvpd)}
+            style={styles.rsvpBtn(rsvpd, isFull && !rsvpd)}
+          >
+            {rsvpLoading ? "..." : rsvpd ? "Cancel RSVP" : isFull ? "Full" : "RSVP"}
+          </button>
+        </div>
+      </div>
+
       {task.contact && (
         <div style={styles.contactBox}>
           <div style={styles.contactLabel}>Contact / Employer</div>
           <div style={styles.contactName}>
-            <Link
-              to={`/contacts/${task.contact.id}`}
-              onClick={onClose}
-              style={styles.link}
-            >
-              {task.contact.name || "View Profile"}
-            </Link>
+            {task.contact.userId ? (
+              <Link
+                to={`/profile/${task.contact.userId}`}
+                onClick={onClose}
+                style={styles.link}
+              >
+                {task.contact.name || "View Profile"}
+              </Link>
+            ) : (
+              <span>{task.contact.name || "—"}</span>
+            )}
           </div>
           {task.contact.phoneNumber && (
             <div style={styles.contactDetail}>📞 {task.contact.phoneNumber}</div>
@@ -231,6 +285,36 @@ const styles = {
     fontWeight: 600,
     cursor: "pointer",
   },
+  rsvpBox: {
+    background: "#f0f7ff",
+    borderRadius: 12,
+    padding: "14px 16px",
+    marginBottom: 16,
+  },
+  rsvpLabel: {
+    fontSize: 11,
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    color: "#888",
+    marginBottom: 4,
+  },
+  rsvpCount: {
+    fontSize: 14,
+    fontWeight: 500,
+    color: "#444",
+  },
+  rsvpBtn: (active, disabled) => ({
+    background: active ? "#fee2e2" : disabled ? "#f0f0f0" : "#3b82f6",
+    color: active ? "#dc2626" : disabled ? "#aaa" : "#fff",
+    border: "none",
+    borderRadius: 999,
+    padding: "8px 18px",
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: disabled ? "default" : "pointer",
+    flexShrink: 0,
+  }),
   contactBox: {
     background: "#f8f8f8",
     borderRadius: 12,

@@ -5,6 +5,15 @@
   text-align: center;
 }
 
+#root.fullscreen {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+  height: 100vh;
+}
+
 nav {
   display: flex;
   justify-content: center;
