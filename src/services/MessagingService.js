@@ -6,7 +6,6 @@ export const sendMessage = async (text, receiverId) => {
   msg.set("text", text);
   msg.set("sender", Parse.User.current());
   msg.set("receiver", { __type: "Pointer", className: "_User", objectId: receiverId });
-  msg.set("read", false);
 
   const acl = new Parse.ACL();
   acl.setReadAccess(Parse.User.current().id, true);
@@ -16,47 +15,6 @@ export const sendMessage = async (text, receiverId) => {
   msg.setACL(acl);
 
   return await msg.save();
-};
-
-export const getUnreadCount = async () => {
-  const current = Parse.User.current();
-  const query = new Parse.Query("Message");
-  query.equalTo("receiver", current);
-  query.equalTo("read", false);
-  return await query.count();
-};
-
-export const markConversationRead = async (otherUserId) => {
-  const current = Parse.User.current();
-  const APP_ID = import.meta.env.VITE_PARSE_APP_ID;
-  const MASTER_KEY = import.meta.env.VITE_PARSE_MASTER_KEY;
-  const BASE = "https://parseapi.back4app.com";
-
-  const where = encodeURIComponent(JSON.stringify({
-    receiver: { __type: "Pointer", className: "_User", objectId: current.id },
-    sender:   { __type: "Pointer", className: "_User", objectId: otherUserId },
-  }));
-
-  const res = await fetch(`${BASE}/classes/Message?where=${where}&limit=100`, {
-    headers: {
-      "X-Parse-Application-Id": APP_ID,
-      "X-Parse-Master-Key": MASTER_KEY,
-    },
-  });
-  const { results } = await res.json();
-  if (!results?.length) return;
-
-  await Promise.all(results.map((msg) =>
-    fetch(`${BASE}/classes/Message/${msg.objectId}`, {
-      method: "PUT",
-      headers: {
-        "X-Parse-Application-Id": APP_ID,
-        "X-Parse-Master-Key": MASTER_KEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ read: true }),
-    })
-  ));
 };
 
 export const subscribeToIncoming = async (onNew) => {

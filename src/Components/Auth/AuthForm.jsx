@@ -1,70 +1,64 @@
-// Reusable form component for both login and registration
-// isRegister determines whether to show first/last name fields
 const AuthForm = ({ user, onChange, onSubmit, isRegister }) => {
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        {isRegister && (
-          <>
-            <div>
-              <label>First Name</label>
-              <br />
-              <input
-                type="text"
-                value={user.firstName}
-                onChange={onChange}
-                name="firstName"
-                placeholder="first name"
-                required
-              />
-            </div>
+    <form onSubmit={onSubmit}>
+      {isRegister && (
+        <>
+          <div className="auth-form-group">
+            <label>First Name</label>
+            <input
+              type="text"
+              value={user.firstName}
+              onChange={onChange}
+              name="firstName"
+              placeholder="First name"
+              required
+            />
+          </div>
 
-            <div>
-              <label>Last Name</label>
-              <br />
-              <input
-                type="text"
-                value={user.lastName}
-                onChange={onChange}
-                name="lastName"
-                placeholder="last name"
-                required
-              />
-            </div>
-          </>
-        )}
+          <div className="auth-form-group">
+            <label>Last Name</label>
+            <input
+              type="text"
+              value={user.lastName}
+              onChange={onChange}
+              name="lastName"
+              placeholder="Last name"
+              required
+            />
+          </div>
+        </>
+      )}
 
-        <div>
-          <label>Email</label>
-          <br />
-          <input
-            type="email"
-            value={user.email}
-            onChange={onChange}
-            name="email"
-            placeholder="email"
-            required
-          />
-        </div>
+      <div className="auth-form-group">
+        <label>Email</label>
+        <input
+          type="email"
+          value={user.email}
+          onChange={onChange}
+          name="email"
+          placeholder="you@example.com"
+          required
+        />
+      </div>
 
-        <div>
-          <label>Password</label>
-          <br />
-          <input
-            type="password"
-            value={user.password}
-            onChange={onChange}
-            name="password"
-            placeholder="password"
-            required
-          />
-        </div>
+      <div className="auth-form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          value={user.password}
+          onChange={onChange}
+          name="password"
+          placeholder="Password"
+          required
+        />
+      </div>
 
-        <div>
-          <button type="submit">Submit</button>
-        </div>
-      </form>
-    </div>
+      <div style={{ marginTop: "1.5rem" }}>
+        <button type="submit" className="btn-primary">
+          {isRegister ? "Create account" : "Sign in"}
+        </button>
+      </div>
+    </form>
   );
 };
 

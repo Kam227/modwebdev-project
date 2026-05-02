@@ -4,8 +4,8 @@ import { seedAll } from "../utils/seedContacts";
 
 export default function SeedPage() {
   const [results, setResults] = useState([]);
-  const [done, setDone]       = useState(false);
-  const navigate              = useNavigate();
+  const [done, setDone] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     seedAll(setResults).then(() => setDone(true));

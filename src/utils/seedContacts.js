@@ -1,14 +1,14 @@
-const APP_ID      = import.meta.env.VITE_PARSE_APP_ID;
-const JS_KEY      = import.meta.env.VITE_PARSE_JS_KEY;
+const APP_ID = import.meta.env.VITE_PARSE_APP_ID;
+const JS_KEY = import.meta.env.VITE_PARSE_JS_KEY;
 const MASTER_KEY  = import.meta.env.VITE_PARSE_MASTER_KEY;
-const BASE        = "https://parseapi.back4app.com";
+const BASE = "https://parseapi.back4app.com";
 
 export const SEED_PASSWORD = "WorkHub2024!";
 
 const WORKERS = [
-  { firstName: "Marcus",  lastName: "Thompson", email: "mthompson@workhub.com" },
-  { firstName: "Aaliyah", lastName: "Brooks",   email: "abrooks@workhub.com"   },
-  { firstName: "Tyler",   lastName: "Nguyen",   email: "tnguyen@workhub.com"   },
+  { firstName: "Marcus", lastName: "Thompson", email: "mthompson@workhub.com"},
+  { firstName: "Aaliyah", lastName: "Brooks", email: "abrooks@workhub.com"},
+  { firstName: "Tyler", lastName: "Nguyen", email: "tnguyen@workhub.com"},
 ];
 
 const SUPPLIERS = [

@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import AuthForm from "./AuthForm";
 import { createUser } from "../../services/AuthService";
 
-// Handles user registration logic
 const AuthRegister = () => {
-  const navigate = useNavigate(); // used to redirect after successful register
+  const navigate = useNavigate();
 
   const [newUser, setNewUser] = useState({
     firstName: "",
@@ -14,22 +13,14 @@ const AuthRegister = () => {
     password: "",
   });
 
-  // Updates state when user types into form
   const onChangeHandler = (e) => {
     const { name, value } = e.target;
-
-    setNewUser({
-      ...newUser,
-      [name]: value,
-    });
+    setNewUser({ ...newUser, [name]: value });
   };
 
-  // Handles form submission
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-
     const userCreated = await createUser(newUser);
-
     if (userCreated) {
       alert(`${userCreated.get("firstName")}, you successfully registered!`);
       navigate("/");
@@ -37,14 +28,26 @@ const AuthRegister = () => {
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      <AuthForm
-        user={newUser}
-        onChange={onChangeHandler}
-        onSubmit={onSubmitHandler}
-        isRegister={true}
-      />
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1 className="auth-brand">HomeLink</h1>
+        <p className="auth-subtitle">Create your account</p>
+
+        <hr className="auth-divider" />
+
+        <AuthForm
+          user={newUser}
+          onChange={onChangeHandler}
+          onSubmit={onSubmitHandler}
+          isRegister={true}
+        />
+
+        <div style={{ textAlign: "center" }}>
+          <Link to="/auth">
+            <button className="auth-back-link">Back to home</button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };

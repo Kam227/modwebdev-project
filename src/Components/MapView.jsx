@@ -5,7 +5,7 @@ import { getTasks } from "../services/tasksService";
 import { getTrainings } from "../services/trainingsService";
 import { searchAll } from "../services/searchService";
 import { logoutUser } from "../services/AuthService";
-import { getConversations, getUnreadCount, subscribeToIncoming } from "../services/MessagingService";
+import { getConversations } from "../services/MessagingService";
 import TaskModal from "./TaskModal";
 import TrainingModal from "./TrainingModal";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -31,7 +31,6 @@ export default function MapView() {
   const [showInbox, setShowInbox] = useState(false);
   const [convs, setConvs] = useState([]);
   const [convsLoading, setConvsLoading] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
   const searchRef = useRef(null);
   const navigate = useNavigate();
 
@@ -77,17 +76,7 @@ export default function MapView() {
   }, []);
 
   useEffect(() => {
-    let sub;
-    getUnreadCount().then(setUnreadCount);
-    subscribeToIncoming(() => getUnreadCount().then(setUnreadCount)).then((s) => { sub = s; });
-    return () => { sub?.unsubscribe(); };
-  }, []);
-
-  useEffect(() => {
-    if (!showInbox) {
-      getUnreadCount().then(setUnreadCount);
-      return;
-    }
+    if (!showInbox) return;
     setConvsLoading(true);
     getConversations()
       .then(setConvs)
@@ -363,23 +352,6 @@ export default function MapView() {
         }}
       >
         Inbox
-        {unreadCount > 0 && (
-          <span style={{
-            background: "#ed4245",
-            color: "#fff",
-            borderRadius: 999,
-            fontSize: 11,
-            fontWeight: 700,
-            minWidth: 18,
-            height: 18,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 5px",
-          }}>
-            {unreadCount > 99 ? "99+" : unreadCount}
-          </span>
-        )}
       </button>
 
       {/* Inbox panel */}

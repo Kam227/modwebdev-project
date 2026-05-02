@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import Parse from "../services/parseClient";
-import { sendMessage, subscribeToMessages, markConversationRead } from "../services/MessagingService";
+import { sendMessage, subscribeToMessages } from "../services/MessagingService";
 import { useParams, useNavigate } from "react-router-dom";
 
 const ChatWindow = () => {
@@ -49,10 +49,8 @@ const ChatWindow = () => {
       const existing = await combinedQuery.find();
       setMessages(existing);
 
-      await markConversationRead(id);
       subscription = await subscribeToMessages(id, (msg) => {
         addMessage(msg);
-        markConversationRead(id);
       });
     };
 
@@ -127,19 +125,23 @@ const ChatWindow = () => {
         >
           ←
         </button>
-        <div style={{
-          width: 32,
-          height: 32,
-          borderRadius: "50%",
-          background: "#5865f2",
-          color: "#fff",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: 700,
-          fontSize: 14,
-          flexShrink: 0,
-        }}>
+        <div
+          onClick={() => navigate(`/profile/${id}`)}
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            background: "#5865f2",
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: 700,
+            fontSize: 14,
+            flexShrink: 0,
+            cursor: "pointer",
+          }}
+        >
           {getInitial(otherUser)}
         </div>
         <span style={{ fontWeight: 600, fontSize: 15, color: "#f2f3f5" }}>{otherName}</span>

@@ -53,6 +53,7 @@ export default function Profile() {
   // All certificates in DB — used for the "add" dropdown
   const [allCerts, setAllCerts] = useState([]);
   const [showCertDropdown, setShowCertDropdown] = useState(false);
+  const [linkedCertIds, setLinkedCertIds] = useState(current.get("certificate") || []);
 
   // Edit states — own profile only
   const [editBio, setEditBio] = useState(false);
@@ -119,20 +120,19 @@ export default function Profile() {
   };
 
   const addCert = async (certId) => {
-    const existing = current.get("certificate") || [];
-    if (existing.includes(certId)) return;
-    const updated = [...existing, certId];
+    if (linkedCertIds.includes(certId)) return;
+    const updated = [...linkedCertIds, certId];
     current.set("certificate", updated);
     await current.save();
-    setProfileUser(current);
+    setLinkedCertIds(updated);
     setShowCertDropdown(false);
   };
 
   const removeCert = async (certId) => {
-    const updated = (current.get("certificate") || []).filter((c) => c !== certId);
+    const updated = linkedCertIds.filter((c) => c !== certId);
     current.set("certificate", updated);
     await current.save();
-    setProfileUser(current);
+    setLinkedCertIds(updated);
   };
 
   if (loadingProfile) return <p style={{ padding: 24 }}>Loading...</p>;
@@ -145,7 +145,6 @@ export default function Profile() {
   const experience = profileUser.get("experience") || [];
 
   // Certificates this user has linked (stored as objectIds in their "certificate" array)
-  const linkedCertIds = profileUser.get("certificate") || [];
   const linkedCerts = allCerts.filter((c) => linkedCertIds.includes(c.id));
   const availableCerts = allCerts.filter((c) => !linkedCertIds.includes(c.id));
 
